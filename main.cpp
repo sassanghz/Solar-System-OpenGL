@@ -14,7 +14,7 @@
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-
+// camera angles
 Camera camera(glm::vec3(0.0f, 0.0f, 10.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
@@ -25,7 +25,7 @@ float lastFrame = 0.0f;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 }
-void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) { // mouse movement
     if (firstMouse) {
         lastX = xpos;
         lastY = ypos;
@@ -40,7 +40,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
     camera.ProcessMouseScroll(yoffset);
 }
-void processInput(GLFWwindow* window) {
+void processInput(GLFWwindow* window) { // key strokes for positioning of what angle the user wants to see
     float currentTime = glfwGetTime();
     deltaTime = currentTime - lastFrame;
     lastFrame = currentTime;
@@ -63,7 +63,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Solar System", NULL, NULL);
-    if (window == NULL) {
+    if (window == NULL) { // error handling
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return -1;
@@ -73,7 +73,7 @@ int main() {
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
+    // error handling
     if (glewInit() != GLEW_OK) {
         std::cout << "Failed to initialize GLEW" << std::endl;
         return -1;
@@ -82,13 +82,20 @@ int main() {
     glEnable(GL_DEPTH_TEST);
     Shader shader("vertex.glsl", "fragment.glsl");
     
-    Planet sun, earth, moon;
+    // image textures of the planets
+    Planet sun, earth, moon, mercury;
     initPlanet(sun, "sun_texture.jpg");
     initPlanet(earth, "earth_texture.jpg");
     initPlanet(moon, "moon_texture.jpg");
+    initPlanet(mercury, "mercury_texture.png");
+
+    // position of mercury
+    glm::vec3 mercuryPosition = glm::vec3(2.0f, 0.0f, 0.0f);
+    float mercuryScale = 0.25f;
+    // position of earth
     glm::vec3 earthPosition = glm::vec3(5.0f, 0.0f, 0.0f);
     float earthScale = 0.5f;
-
+    // position of moon
     glm::vec3 moonPosition = glm::vec3(6.0f, 0.0f, 0.0f);
     float moonScale = 0.15f;
 
@@ -103,20 +110,21 @@ int main() {
 
         shader.use();
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), 
-                                (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
         shader.setMat4("projection", projection);
         shader.setMat4("view", view);
         
         // Draw sun, planets, moons here
         float time = glfwGetTime() * 0.2f;
+        // earth
         glm::vec3 earthPosition = glm::vec3(
             5.0f * cos(time),
             0.0f,
             5.0f * sin(time)
         );
         float earthScale = 0.5f;
-
+        // moon
         glm::vec3 moonPosition = earthPosition + glm::vec3(
             1.0f * cos(time * 4.0f),
             0.0f,
@@ -124,9 +132,18 @@ int main() {
         );
         float moonScale = 0.15f;
         
+        // mercury
+        glm::vec3 mercuryPosition = glm::vec3(
+            2.5f * cos(time * 2.0f),
+            0.0f,
+            2.5f * sin(time * 2.0f)
+        );
+        float mercuryScale = 0.2f;
+        // rendering
         renderPlanet(sun, shader, glm::vec3(0.0f), 1.5f);
         renderPlanet(earth, shader, earthPosition, earthScale);
         renderPlanet(moon, shader, moonPosition, moonScale);
+        renderPlanet(mercury, shader, mercuryPosition, mercuryScale);
 
 
 
