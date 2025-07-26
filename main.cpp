@@ -18,7 +18,7 @@
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 // camera angles
-Camera camera(glm::vec3(0.0f, 0.0f, 10.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 30.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -88,13 +88,15 @@ int main() {
     Shader shader("vertex.glsl", "fragment.glsl");
     
     // image textures of the planets
-    Planet sun, earth, moon, mercury, venus, mars;
+    Planet sun, earth, moon, mercury, venus, mars, phobos, deimos;
     initPlanet(sun, "sun_texture.jpg");
     initPlanet(earth, "earth_texture.jpg");
     initPlanet(moon, "moon_texture.jpg");
-    initPlanet(mercury, "mercury_texture.png");
-    initPlanet(venus, "venus_texture.png");
-    initPlanet(mars, "mars_texture.png")
+    initPlanet(mercury, "mercury_texture.jpg");
+    initPlanet(venus, "venus_texture.jpg");
+    initPlanet(mars, "mars_texture.jpg");
+    initPlanet(phobos, "phobos_texture.jpg");
+    initPlanet(deimos, "deimos_texture.jpg");
 
     // position of mercury
     glm::vec3 mercuryPosition = glm::vec3(2.0f, 0.0f, 0.0f);
@@ -129,11 +131,17 @@ int main() {
         
         // Draw sun, planets, moons here
         float time = glfwGetTime() * 0.2f;
+        float earthSpin = time * 50.0f;  // adjust speed as needed
+        float mercurySpin = time * 5.0f;
+        float venusSpin   = time * -1.0f;
+        float marsSpin    = time * 48.0f;
+
+
         // earth
         glm::vec3 earthPosition = glm::vec3(
-            5.0f * cos(time),
+            8.0f * cos(time),
             0.0f,
-            5.0f * sin(time)
+            8.0f * sin(time)
         );
         float earthScale = 0.5f;
         // moon
@@ -142,39 +150,56 @@ int main() {
             0.0f,
             1.0f * sin(time * 4.0f)
         );
-        float moonScale = 0.15f;
+        float moonScale = earthScale * 0.27f;
         
         // mercury
         glm::vec3 mercuryPosition = glm::vec3(
-            2.5f * cos(time * 2.0f),
+            5.5f * cos(time * 2.0f),
             0.0f,
-            2.5f * sin(time * 2.0f)
+            5.5f * sin(time * 2.0f)
         );
-        float mercuryScale = 0.2f;
+        float mercuryScale = earthScale * 0.38f;
 
         // venus
         glm::vec3 venusPosition = glm::vec3(
-            3.5f * cos(time * 1.3f),
+            6.5f * cos(time * 1.3f),
             0.0f,
-            3.5f * sin(time * 1.3f)
+            6.5f * sin(time * 1.3f)
         );
-        float venusScale = 0.4f;
+        float venusScale = earthScale * 0.95f;
 
         // mars
         glm::vec3 marsPosition = glm::vec3(
-            8.0f * cos(time * 0.9f),
+            11.0f * cos(time * 0.9f),
             0.0f,
-            8.0f * sin(time * 0.9f)
+            11.0f * sin(time * 0.9f)
         );
-        float marsScale = 0.5f;
+        float marsScale = earthScale * 0.53f;
+        
+        glm::vec3 phobosPosition = marsPosition + glm::vec3(
+            0.3f * cos(4.0f * time), // fast orbit
+            0.0f,
+            0.3f * sin(4.0f * time)
+        );
+        float phobosScale = marsScale * 0.05f;
+
+        glm::vec3 deimosPosition = marsPosition + glm::vec3(
+            0.6f * cos(1.0f * time), // slower orbit
+            0.0f,
+            0.6f * sin(1.0f * time)
+        );
+        float deimosScale = marsScale * 0.03f;
+
 
         // rendering
-        renderPlanet(sun, shader, glm::vec3(0.0f), 1.5f);
-        renderPlanet(earth, shader, earthPosition, earthScale);
+        renderPlanet(sun, shader, glm::vec3(0.0f), earthScale * 10.0f);
+        renderPlanet(earth, shader, earthPosition, earthScale, earthSpin, 23.5f);
         renderPlanet(moon, shader, moonPosition, moonScale);
-        renderPlanet(mercury, shader, mercuryPosition, mercuryScale);
-        renderPlanet(venus, shader, venusPosition, venusScale);
-        renderPlanet(mars, shader, marsPosition, marsScale);
+        renderPlanet(mercury, shader, mercuryPosition, mercuryScale, mercurySpin, 0.0f);
+        renderPlanet(venus, shader, venusPosition, venusScale, venusSpin, 177.0f);
+        renderPlanet(mars, shader, marsPosition, marsScale, marsSpin, 25.0f);
+        renderPlanet(phobos, shader, phobosPosition, phobosScale);
+        renderPlanet(deimos, shader, deimosPosition, deimosScale);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

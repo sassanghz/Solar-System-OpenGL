@@ -100,9 +100,12 @@ void initPlanet(Planet& planet, const std::string& texturePath) {
     stbi_image_free(data);
 }
 
-void renderPlanet(Planet& planet, Shader& shader, glm::vec3 position, float scale = 1.0f) {
+void renderPlanet(Planet& planet, Shader& shader, glm::vec3 position, float scale = 1.0f, float spin = 0.0f, float tilt = 0.0f) {
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, position);
+    model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f)); //fix orientation
+    model = glm::rotate(model, glm::radians(tilt), glm::vec3(0.0f, 0.0f, 1.0f));   // axial tilt
+    model = glm::rotate(model, glm::radians(spin), glm::vec3(0.0f, 0.0f, 1.0f));   // spin around Z
     model = glm::scale(model, glm::vec3(scale));
     shader.setMat4("model", model);
 
