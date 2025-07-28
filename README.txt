@@ -5,3 +5,4 @@ Controls:
 
 Team Members:
 - Matt Monjazeb (40061099)
+- Theodore Trevick (40272336)

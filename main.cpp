@@ -88,7 +88,7 @@ int main() {
     Shader shader("vertex.glsl", "fragment.glsl");
     
     // image textures of the planets
-    Planet sun, earth, moon, mercury, venus, mars, phobos, deimos;
+    Planet sun, earth, moon, mercury, venus, mars, phobos, deimos, saturn, jupiter, uranus, neptune;
     initPlanet(sun, "sun_texture.jpg");
     initPlanet(earth, "earth_texture.jpg");
     initPlanet(moon, "moon_texture.jpg");
@@ -97,6 +97,12 @@ int main() {
     initPlanet(mars, "mars_texture.jpg");
     initPlanet(phobos, "phobos_texture.jpg");
     initPlanet(deimos, "deimos_texture.jpg");
+    //TODO: get new textures for other planets
+    initPlanet(saturn, "saturn_texture.jpg");
+    initPlanet(jupiter, "jupiter_texture.jpg");
+    initPlanet(uranus, "uranus_texture.jpg");
+    initPlanet(neptune, "neptune_texture.jpg");
+
 
     // position of mercury
     glm::vec3 mercuryPosition = glm::vec3(2.0f, 0.0f, 0.0f);
@@ -113,6 +119,20 @@ int main() {
     // position of mars
     glm::vec3 marsPosition = glm::vec3(8.0f, 0.0f, 0.0f);
     float marsScale = 0.5f;
+
+    //TODO: double check numbers I just made up them
+    //position of jupiter
+    glm::vec3 jupiterPosition = glm::vec3(15.0f, 0.0f, 0.0f);
+    float jupiterScale = 1.0f;
+    //position of uranus
+    glm::vec3 uranusPosition = glm::vec3(25.0f, 0.0f, 0.0f);
+    float uranusScale = 0.8f;
+    //position of saturn
+    glm::vec3 saturnPosition = glm::vec3(35.0f, 0.0f, 0.0f);
+    float saturnScale = 0.9f;
+    //position of neptune
+    glm::vec3 neptunePosition = glm::vec3(45.0f, 0.0f, 0.0f);
+    float neptuneScale = 0.7f;
 
 
 
@@ -135,6 +155,11 @@ int main() {
         float mercurySpin = time * 5.0f;
         float venusSpin   = time * -1.0f;
         float marsSpin    = time * 48.0f;
+        //TODO : Double check speeds, I just made up them
+        float jupiterSpin = time * 12.0f;
+        float uranusSpin = time * 13.0f;
+        float saturnSpin = time * 16.0f; 
+        float neptuneSpin = time * 25.0f; 
 
 
         // earth
@@ -190,6 +215,33 @@ int main() {
         );
         float deimosScale = marsScale * 0.03f;
 
+        //jupiter, uranus, saturn, neptune
+        //TODO: double check numbers
+        glm::vec3 jupiterPosition = glm::vec3(
+            15.0f * cos(time * 0.5f),
+            0.0f,
+            15.0f * sin(time * 0.5f)
+        );
+        float jupiterScale = earthScale * 11.2f;
+        glm::vec3 uranusPosition = glm::vec3(
+            20.0f * cos(time * 0.3f),
+            0.0f,
+            20.0f * sin(time * 0.3f)
+        );
+        float uranusScale = earthScale * 4.0f;
+        glm::vec3 saturnPosition = glm::vec3(
+            18.0f * cos(time * 0.4f),
+            0.0f,
+            18.0f * sin(time * 0.4f)
+        );
+        float saturnScale = earthScale * 9.4f;
+        glm::vec3 neptunePosition = glm::vec3(
+            22.0f * cos(time * 0.2f),
+            0.0f,
+            22.0f * sin(time * 0.2f)
+        );
+        float neptuneScale = earthScale * 3.9f;
+
 
         // rendering
         renderPlanet(sun, shader, glm::vec3(0.0f), earthScale * 10.0f);
@@ -200,6 +252,11 @@ int main() {
         renderPlanet(mars, shader, marsPosition, marsScale, marsSpin, 25.0f);
         renderPlanet(phobos, shader, phobosPosition, phobosScale);
         renderPlanet(deimos, shader, deimosPosition, deimosScale);
+        //TODO: double check numbers
+        renderPlanet(jupiter, shader, jupiterPosition, jupiterScale, jupiterSpin, 3.0f);
+        renderPlanet(uranus, shader, uranusPosition, uranusScale, uranusSpin, 97.8f);
+        renderPlanet(saturn, shader, saturnPosition, saturnScale, saturnSpin, 26.7f);
+        renderPlanet(neptune, shader, neptunePosition, neptuneScale, neptuneSpin, 28.3f);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
