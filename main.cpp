@@ -24,6 +24,7 @@ float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
+float timeBoost = 0.0f; //time added by the user
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) { // resizing the window frame
     glViewport(0, 0, width, height);
@@ -57,6 +58,8 @@ void processInput(GLFWwindow* window) { // key strokes for positioning of what a
         camera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+        timeBoost += 0.05f; // Skip forward in time by 
 }
 
 int main() {
@@ -150,7 +153,7 @@ int main() {
         shader.setMat4("view", view);
         
         // Draw sun, planets, moons here
-        float time = glfwGetTime() * 0.2f;
+        float time = (glfwGetTime() * 0.2f) + timeBoost;
         float earthSpin = time * 50.0f;  // adjust speed as needed
         float mercurySpin = time * 5.0f;
         float venusSpin   = time * -1.0f;
@@ -218,27 +221,27 @@ int main() {
         //jupiter, uranus, saturn, neptune
         //TODO: double check numbers
         glm::vec3 jupiterPosition = glm::vec3(
-            15.0f * cos(time * 0.5f),
+            18.0f * cos(time * 0.5f),
             0.0f,
-            15.0f * sin(time * 0.5f)
+            18.0f * sin(time * 0.5f)
         );
         float jupiterScale = earthScale * 11.2f;
         glm::vec3 uranusPosition = glm::vec3(
-            20.0f * cos(time * 0.3f),
+            27.0f * cos(time * 0.3f),
             0.0f,
-            20.0f * sin(time * 0.3f)
+            27.0f * sin(time * 0.3f)
         );
         float uranusScale = earthScale * 4.0f;
         glm::vec3 saturnPosition = glm::vec3(
-            18.0f * cos(time * 0.4f),
+            35.0f * cos(time * 0.4f),
             0.0f,
-            18.0f * sin(time * 0.4f)
+            35.0f * sin(time * 0.4f)
         );
         float saturnScale = earthScale * 9.4f;
         glm::vec3 neptunePosition = glm::vec3(
-            22.0f * cos(time * 0.2f),
+            43.0f * cos(time * 0.2f),
             0.0f,
-            22.0f * sin(time * 0.2f)
+            43.0f * sin(time * 0.2f)
         );
         float neptuneScale = earthScale * 3.9f;
 
