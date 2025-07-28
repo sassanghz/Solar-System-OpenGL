@@ -37,6 +37,11 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) { // mouse mov
     }
     float xoffset = xpos - lastX;
     float yoffset = lastY - ypos; 
+
+    float sensitivity = 0.1f; // Lower values = less sensitive
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
     lastX = xpos;
     lastY = ypos;
     camera.ProcessMouseMovement(xoffset, yoffset);
@@ -59,7 +64,7 @@ void processInput(GLFWwindow* window) { // key strokes for positioning of what a
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
-        timeBoost += 0.05f; // Skip forward in time by 
+        timeBoost += 0.05f; // Skip forward in time while holding "3" key
 }
 
 int main() {
@@ -91,7 +96,7 @@ int main() {
     Shader shader("vertex.glsl", "fragment.glsl");
     
     // image textures of the planets
-    Planet sun, earth, moon, mercury, venus, mars, phobos, deimos, saturn, jupiter, uranus, neptune;
+    Planet sun, earth, moon, mercury, venus, mars, phobos, deimos, saturn, saturnRings, jupiter, uranus, neptune;
     initPlanet(sun, "sun_texture.jpg");
     initPlanet(earth, "earth_texture.jpg");
     initPlanet(moon, "moon_texture.jpg");
@@ -102,6 +107,7 @@ int main() {
     initPlanet(deimos, "deimos_texture.jpg");
     //TODO: get new textures for other planets
     initPlanet(saturn, "saturn_texture.jpg");
+    initRings(saturnRings, "saturnRings_texture.png");
     initPlanet(jupiter, "jupiter_texture.jpg");
     initPlanet(uranus, "uranus_texture.jpg");
     initPlanet(neptune, "neptune_texture.jpg");
@@ -226,22 +232,28 @@ int main() {
             18.0f * sin(time * 0.5f)
         );
         float jupiterScale = earthScale * 11.2f;
+
         glm::vec3 uranusPosition = glm::vec3(
             27.0f * cos(time * 0.3f),
             0.0f,
             27.0f * sin(time * 0.3f)
         );
         float uranusScale = earthScale * 4.0f;
+
         glm::vec3 saturnPosition = glm::vec3(
-            35.0f * cos(time * 0.4f),
+            38.0f * cos(time * 0.4f),
             0.0f,
-            35.0f * sin(time * 0.4f)
+            38.0f * sin(time * 0.4f)
         );
         float saturnScale = earthScale * 9.4f;
+
+        glm::vec3 saturnRingsPosition = saturnPosition;
+        float saturnRingsScale = saturnScale * 2.0f; // scale for rings
+
         glm::vec3 neptunePosition = glm::vec3(
-            43.0f * cos(time * 0.2f),
+            48.0f * cos(time * 0.2f),
             0.0f,
-            43.0f * sin(time * 0.2f)
+            48.0f * sin(time * 0.2f)
         );
         float neptuneScale = earthScale * 3.9f;
 
@@ -259,6 +271,7 @@ int main() {
         renderPlanet(jupiter, shader, jupiterPosition, jupiterScale, jupiterSpin, 3.0f);
         renderPlanet(uranus, shader, uranusPosition, uranusScale, uranusSpin, 97.8f);
         renderPlanet(saturn, shader, saturnPosition, saturnScale, saturnSpin, 26.7f);
+        renderRings(saturnRings, shader, saturnRingsPosition, saturnRingsScale);
         renderPlanet(neptune, shader, neptunePosition, neptuneScale, neptuneSpin, 28.3f);
 
         glfwSwapBuffers(window);
