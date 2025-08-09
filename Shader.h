@@ -59,8 +59,25 @@ public:
         glUseProgram(ID);
     }
 
+    void setInt(const std::string &name, int value) const {
+        glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
+    }
+
     void setMat4(const std::string &name, const glm::mat4 &mat) const {
         glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
     }
+
+    void setFloat(const std::string& n, float v) const {
+        glUniform1f(glGetUniformLocation(ID,n.c_str()), v); 
+    }
+    
+    void setVec3 (const std::string& n, const glm::vec3& v) const { 
+        glUniform3fv(glGetUniformLocation(ID,n.c_str()),1,&v[0]);
+    }
+
+    void setBool(const std::string& name, bool v) const {
+        glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)v);
+    }
+
 };
 #endif
