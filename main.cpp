@@ -316,8 +316,9 @@ int main() {
 
        // === Light-space matrix for Sun ===
         glm::vec3 center = glm::vec3(0.0f); // center of solar system
-        glm::vec3 sunDir = glm::normalize(glm::vec3(-1.0f, 0.0f, 0.0f));
-        glm::vec3 lightPos = center + sunDir * 50.0f;
+        float tSun = glfwGetTime() * 0.2f;
+        glm::vec3 sunDir = glm::normalize(glm::vec3(cos(tSun), 0.1f, sin(tSun)));
+        glm::vec3 lightPos = center - sunDir * 50.0f;
 
         float orthoRange = 30.0f;
         glm::mat4 lightProj = glm::ortho(-orthoRange, orthoRange, -orthoRange, orthoRange, 1.0f, 120.0f);
